@@ -1,0 +1,15 @@
+FROM python
+
+RUN pip install ethereum dill https://github.com/ethereum/serpent/tarball/develop
+
+WORKDIR /app
+
+COPY src/ /app/src/
+COPY compile_contracts.py /app/compile_contracts.py
+COPY tests/__init__.py /app/tests/__init__.py
+COPY tests/load_contracts.py /app/tests/load_contracts.py
+RUN python -u compile_contracts.py
+
+COPY tests/ /app/tests/
+
+ENTRYPOINT ["python", "-u", "tests/reporting.py"]
